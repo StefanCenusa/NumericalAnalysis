@@ -1,5 +1,10 @@
 package com.company;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
+
 public class Main {
 
     public static double addPrecision() {
@@ -58,14 +63,10 @@ public class Main {
     }
 
     public static double tan(double x, double e) {
-        x = x % Math.PI - Math.PI / 2.0;
-//        if (x % (Math.PI / 2.0) == 0) {
-//            if (x < 0) {
-//                return -1;
-//            } else if (x > 0) {
-//                return 1;
-//            }
-//        }
+        if (x % (Math.PI / 2.0) == 0) {
+            return x < 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+        }
+        x = x % Math.PI;
         if (x > -Math.PI / 2.0 && x < Math.PI / 2.0) {
             return Lentz(x, e);
         } else {
@@ -73,11 +74,159 @@ public class Main {
         }
     }
 
+    public static double[] readArrayFromConsole() {
+        Scanner s = new Scanner(System.in);
+
+        int count = s.nextInt();
+        s.nextLine();
+
+        double[] numbers = new double[count];
+        Scanner numScanner = new Scanner(s.nextLine());
+        for (int i = 0; i < count; i++) {
+            if (numScanner.hasNextDouble()) {
+                numbers[i] = numScanner.nextDouble();
+            } else {
+                System.out.println("You didn't provide enough numbers");
+                break;
+            }
+        }
+
+        return numbers;
+    }
+
+    public static double[] readArrayFromFile() {
+        Scanner s = null;
+        try {
+            s = new Scanner(new File("arrayInput.txt"));
+        } catch (IOException ex) {
+            System.err.println("An IOException was caught!");
+            ex.printStackTrace();
+        }
+
+        int count = s.nextInt();
+        s.nextLine();
+
+        double[] numbers = new double[count];
+        Scanner numScanner = new Scanner(s.nextLine());
+        for (int i = 0; i < count; i++) {
+            if (numScanner.hasNextDouble()) {
+                numbers[i] = numScanner.nextDouble();
+            } else {
+                System.out.println("You didn't provide enough numbers");
+                break;
+            }
+        }
+
+        return numbers;
+    }
+
+    public static double[] generateArray(int n) {
+        double[] array = new double[n];
+        for (int i = 0; i < n; i++)
+            array[i] = Math.random();
+        return array;
+    }
+
+    public static double[][] readMatrixFromConsole() {
+        Scanner s = new Scanner(System.in);
+
+        int n = s.nextInt();
+        int m = s.nextInt();
+        s.nextLine();
+
+        double[][] numbers = new double[n][m];
+        Scanner numScanner = new Scanner(s.nextLine());
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (numScanner.hasNextDouble()) {
+                    numbers[i][j] = numScanner.nextDouble();
+                } else {
+                    System.out.println("You didn't provide enough numbers");
+                    break;
+                }
+            }
+            if (i < n - 1) {
+                numScanner = new Scanner(s.nextLine());
+            }
+        }
+
+        return numbers;
+    }
+
+    public static double[][] readMatrixFromFile() {
+        Scanner s = null;
+        try {
+            s = new Scanner(new File("arrayInput.txt"));
+        } catch (IOException ex) {
+            System.err.println("An IOException was caught!");
+            ex.printStackTrace();
+        }
+
+        int n = s.nextInt();
+        int m = s.nextInt();
+        s.nextLine();
+
+        double[][] numbers = new double[n][m];
+        Scanner numScanner = new Scanner(s.nextLine());
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (numScanner.hasNextDouble()) {
+                    numbers[i][j] = numScanner.nextDouble();
+                } else {
+                    System.out.println("You didn't provide enough numbers");
+                    break;
+                }
+            }
+            if (i < n - 1) {
+                numScanner = new Scanner(s.nextLine());
+            }
+        }
+
+        return numbers;
+    }
+
+    public static double[][] generateMatrix(int n, int m) {
+        double[][] matrix = new double[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                matrix[i][j] = Math.random();
+            }
+        }
+        return matrix;
+    }
+
+    public static void printArray(double a[]) {
+        System.out.println(Arrays.toString(a));
+    }
+
+    public static void printMatrix(double matrix[][]) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.print("\n");
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println("Tema 1");
-        System.out.println("1.  " + addPrecision());
-        System.out.println("2.  " + addAssociativity());
-        System.out.println("2.  " + crossProductAssociativity());
-        System.out.println("3.  " + tan(Math.PI/4, Math.pow(10, -20)));
+        System.out.println("Homework 1");
+        System.out.println("---------------------------");
+
+        System.out.println("1.  Add precision: " + addPrecision());
+        System.out.println("---------------------------");
+
+        System.out.println("2.  Add associativity: " + addAssociativity());
+        System.out.println("2.  crossProduct associativity: " + crossProductAssociativity());
+        System.out.println("---------------------------");
+
+        double x = Math.PI / 2 + 1;
+        System.out.println("3.  Tan using Lentz formula: " + tan(x, Math.pow(10, -20)));
+        System.out.println("3.  Math tan function: " + Math.tan(x));
+
+        //readArrayFromConsole();
+        //readArrayFromFile();
+        printArray(generateArray(3));
+        printMatrix(generateMatrix(3, 3));
+        printMatrix(readMatrixFromConsole());
     }
 }
