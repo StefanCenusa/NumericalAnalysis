@@ -97,7 +97,7 @@ public class Main {
     public static double[] readArrayFromFile() {
         Scanner s = null;
         try {
-            s = new Scanner(new File("arrayInput.txt"));
+            s = new Scanner(new File("resources/arrayInput.txt"));
         } catch (IOException ex) {
             System.err.println("An IOException was caught!");
             ex.printStackTrace();
@@ -156,7 +156,7 @@ public class Main {
     public static double[][] readMatrixFromFile() {
         Scanner s = null;
         try {
-            s = new Scanner(new File("arrayInput.txt"));
+            s = new Scanner(new File("resources/matrixInput.txt"));
         } catch (IOException ex) {
             System.err.println("An IOException was caught!");
             ex.printStackTrace();
@@ -201,10 +201,7 @@ public class Main {
 
     public static void printMatrix(double matrix[][]) {
         for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.print("\n");
+            printArray(matrix[i]);
         }
     }
 
@@ -222,11 +219,14 @@ public class Main {
         double x = Math.PI / 2 + 1;
         System.out.println("3.  Tan using Lentz formula: " + tan(x, Math.pow(10, -20)));
         System.out.println("3.  Math tan function: " + Math.tan(x));
+        System.out.println("---------------------------");
 
-        //readArrayFromConsole();
-        //readArrayFromFile();
+        System.out.println("4.  ");
+//        readArrayFromConsole();
+        printArray(readArrayFromFile());
         printArray(generateArray(3));
         printMatrix(generateMatrix(3, 3));
         printMatrix(readMatrixFromConsole());
+        printMatrix(readMatrixFromFile());
     }
 }
