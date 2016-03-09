@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.Arrays;
+import Jama.*;
 
 public class Main {
 
@@ -53,7 +54,7 @@ public class Main {
         return b;
     }
 
-    public static double euclidianNorm(double z[]) {
+    public static double euclideanNorm(double z[]) {
         double norm = 0.0;
         int n = z.length;
         for (int i = 0; i < n; i++) {
@@ -154,24 +155,25 @@ public class Main {
         long startTime, stopTime, elapsedTime;
 
         startTime = System.currentTimeMillis();
-        Householder(A, eps);
+        double[][] XHouseholder = Householder(An250, eps);
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
         System.out.println("3. QR Decomposition of Matrix A time measurement");
         System.out.println("a. Using Householder algorithm: " + elapsedTime);
 
+        Matrix Am = new Matrix(An250);
         startTime = System.currentTimeMillis();
-        //Matrix.QRDecomposition(A);
+        QRDecomposition QR = new QRDecomposition(Am);
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
         System.out.println("b. Using Java lib: " + elapsedTime);
         System.out.println("---------------------------");
 
         System.out.println("4. Errors of QR Decomposition of Matrix A: ");
-        System.out.println(euclidianNorm(arrayMatrixProduct(A, Householder(A, eps)) - b));
-        System.out.println(euclidianNorm(arrayMatrixProduct(A, Matrix.QRDecomposition(A)) - b));
-        System.out.println(euclidianNorm(Householder(A, eps) - s)/euclidianNorm(s));
-        System.out.println(euclidianNorm(Matrix.QRDecomposition(A) - s)/euclidianNorm(s));
+        System.out.println(euclideanNorm(arrayMatrixProduct(A, XHouseholder) - b));
+        System.out.println(euclideanNorm(arrayMatrixProduct(A, QR) - b));
+        System.out.println(euclideanNorm(XHouseholder - s)/ euclideanNorm(s));
+        System.out.println(euclideanNorm(QR - s)/ euclideanNorm(s));
         System.out.println("---------------------------");
     }
 }
