@@ -216,9 +216,12 @@ public class Main {
         System.out.println("2.  crossProduct associativity: " + crossProductAssociativity());
         System.out.println("---------------------------");
 
-        double x = Math.PI / 2 + 1;
-        System.out.println("3.  Tan using Lentz formula: " + tan(x, Math.pow(10, -20)));
-        System.out.println("3.  Math tan function: " + Math.tan(x));
+        double x = -10;
+        double lentzTan = tan(x, Math.pow(10, -20));
+        double mathTan = Math.tan(x);
+        System.out.println("3.  Tan using Lentz formula: " + lentzTan);
+        System.out.println("3.  Math tan function: " + mathTan);
+        System.out.println("3.  Lentz formula error: " + Math.abs(lentzTan - mathTan));
         System.out.println("---------------------------");
 
         System.out.println("4.  ");
