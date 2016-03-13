@@ -102,7 +102,7 @@ public class Main {
 
         int l = 0;
         partialPivoting(l, ACopy);
-        while ((l < n - 1) && (Math.abs(ACopy[l][l]) > eps)) {
+        while ((l < n-1) && (Math.abs(ACopy[l][l]) > eps)) {
             for (int i = l + 1; i < n; i++) {
                 double f = -((ACopy[i][l]) / (ACopy[l][l]));
                 for (int j = l + 1; j < 2 * n; j++) {
@@ -129,6 +129,7 @@ public class Main {
         int m = 10;
         double eps = Math.pow(10, -m);
         double[][] A = {{1., 0., 2.}, {0., 1., 0.}, {1., 1., 1.}};
+        //double[][] A = {{3., 0., 1.}, {0., 1., 1.}, {6., 1., 4.}};
         System.out.println("Gauss elimination algorithm");
         GaussElimination(A, eps);
         System.out.println("---------------------------");

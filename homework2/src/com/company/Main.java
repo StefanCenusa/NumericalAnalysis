@@ -55,7 +55,7 @@ public class Main {
         int n = a.length;
         double[] b = new double[n];
         for (int i = 0; i < n; i++) {
-            b[i] = a[i][i];
+            b[i] = a[i][0];
         }
         return b;
     }
