@@ -2,25 +2,24 @@ public class Main {
 
     public static double matrixDeterminant(double[][] A, int n) {
         double sum = 0.0;
-        double[][] c = new double[n][n];
+        double[][] c = new double[n - 1][n - 1];
         if (n == 2) {
             return (A[0][0] * A[1][1] - A[0][1] * A[1][0]);
         } else {
-            int line = 0, col = 0;
             for (int p = 0; p < n; p++) {
-                for (int i = 0; i < n; i++) {
+                int line = 0, col = 0;
+                for (int i = 1; i < n; i++) {
                     for (int j = 0; j < n; j++) {
                         if (j == p)
                             continue;
-                        c[line][col] = A[i][j];
-                        col++;
+                        c[line][col++] = A[i][j];
                         if (col == n - 1) {
                             line++;
                             col = 0;
                         }
                     }
                 }
-                sum = sum + A[0][p] * Math.pow(-1, p) * matrixDeterminant(c, n - 1);
+                sum += A[0][p] * Math.pow(-1, p) * matrixDeterminant(c, n - 1);
             }
             return sum;
         }
@@ -68,42 +67,58 @@ public class Main {
         if (i0 == l) {
             return;
         }
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < 2 * n; j++) {
             aux = A[i0][j];
             A[i0][j] = A[l][j];
             A[l][j] = aux;
         }
     }
 
-    public static void reverseMatrixComputation() {
-
+    public static double[][] computeReverseMatrix(double[][] A, int n) {
+        double[][] A1 = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                A1[i][j] = A[i][n + j];
+            }
+        }
+        return A1;
     }
+
 
     public static void GaussElimination(double[][] A, double eps) {
         int n = A.length;
-        double[][] Acopy = new double[n][n];
-        for (int i = 0; i < A.length; i++)
-            Acopy[i] = A[i].clone();
+        double[][] ACopy = new double[n][2 * n];
+        int k = n;
+        for (int i = 0; i < n; i++) {
+            int j;
+            for (j = 0; j < n; j++) {
+                ACopy[i][j] = A[i][j];
+            }
+            for (; j < 2 * n; j++) {
+                ACopy[i][j] = 0;
+            }
+            ACopy[i][k++] = 1;
+        }
 
         int l = 0;
-        partialPivoting(l, A);
-        while ((l < n) && (Math.abs(Acopy[l][l]) > eps)) {
+        partialPivoting(l, ACopy);
+        while ((l < n - 1) && (Math.abs(ACopy[l][l]) > eps)) {
             for (int i = l + 1; i < n; i++) {
-                double f = -(Acopy[i][l]) / (Acopy[l][l]);
+                double f = -((ACopy[i][l]) / (ACopy[l][l]));
                 for (int j = l + 1; j < 2 * n; j++) {
-                    Acopy[i][j] = Acopy[i][j] + f * Acopy[i][j];
+                    ACopy[i][j] += f * ACopy[l][j];
                 }
-                Acopy[i][l] = 0;
+                ACopy[i][l] = 0;
             }
             l++;
-            partialPivoting(l, A);
+            partialPivoting(l, ACopy);
         }
-        if (Math.abs(Acopy[l][l]) <= eps) {
+        if (Math.abs(ACopy[l][l]) <= eps) {
             System.out.println("Singular matrix!");
             return;
         }
-        reverseMatrixComputation();
-        double norm = normComputation(A, Acopy);
+        double[][] A1 = computeReverseMatrix(ACopy, A.length);
+        double norm = normComputation(A, A1);
         System.out.println("||A*(A^-1) - In||1 = " + norm);
     }
 
@@ -115,11 +130,11 @@ public class Main {
         double eps = Math.pow(10, -m);
         double[][] A = {{1., 0., 2.}, {0., 1., 0.}, {1., 1., 1.}};
         System.out.println("Gauss elimination algorithm");
-        System.out.println("---------------------------");
         GaussElimination(A, eps);
+        System.out.println("---------------------------");
 
         System.out.println("Matrix determinant");
+        System.out.println("det(A) = " + matrixDeterminant(A, A.length));
         System.out.println("---------------------------");
-        matrixDeterminant(A, A.length);
     }
 }
