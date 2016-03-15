@@ -1,3 +1,5 @@
+import Jama.*;
+
 public class Main {
 
     public static double matrixDeterminant(double[][] A, int n) {
@@ -33,7 +35,7 @@ public class Main {
             for (int j = 0; j < n; j++) {
                 matrix[i][j] = i == j ? -1. : 0;
                 for (int x = 0; x < n; x++) {
-                    matrix[i][j] += A[i][x] * A[x][i];
+                    matrix[i][j] += A[i][x] * A1[x][j];
                 }
             }
         }
@@ -74,11 +76,30 @@ public class Main {
         }
     }
 
-    public static double[][] computeReverseMatrix(double[][] A, int n) {
+    public static double[][] computeReverseMatrix(double[][] Acopy, int n) {
+        double[][] r = new double[n][n];
+        for (int i=0; i<n; i++){
+            for (int j=0; j<n; j++){
+                r[i][j] = Acopy[i][j];
+            }
+        }
+        Matrix R = new Matrix(r);
+        for (int j = 0; j < n; j++) {
+            double[] b = new double[n];
+            for (int i = 0; i < n; i++) {
+                b[i] = Acopy[i][j + n];
+            }
+            Matrix Aej = new Matrix(b, n);
+            Matrix X = R.solve(Aej);
+            double[] x = X.getColumnPackedCopy();
+            for (int i = 0; i < n; i++) {
+                Acopy[i][j + n] = x[i];
+            }
+        }
         double[][] A1 = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                A1[i][j] = A[i][n + j];
+                A1[i][j] = Acopy[i][n + j];
             }
         }
         return A1;
@@ -102,7 +123,7 @@ public class Main {
 
         int l = 0;
         partialPivoting(l, ACopy);
-        while ((l < n-1) && (Math.abs(ACopy[l][l]) > eps)) {
+        while ((l < n - 1) && (Math.abs(ACopy[l][l]) > eps)) {
             for (int i = l + 1; i < n; i++) {
                 double f = -((ACopy[i][l]) / (ACopy[l][l]));
                 for (int j = l + 1; j < 2 * n; j++) {
@@ -129,7 +150,7 @@ public class Main {
         int m = 10;
         double eps = Math.pow(10, -m);
         double[][] A = {{1., 0., 2.}, {0., 1., 0.}, {1., 1., 1.}};
-        //double[][] A = {{3., 0., 1.}, {0., 1., 1.}, {6., 1., 4.}};
+//        double[][] A = {{3., 0., 1.}, {0., 1., 1.}, {6., 1., 4.}};
         System.out.println("Gauss elimination algorithm");
         GaussElimination(A, eps);
         System.out.println("---------------------------");
