@@ -149,8 +149,8 @@ public class Main {
 
         int m = 10;
         double eps = Math.pow(10, -m);
-        double[][] A = {{1., 0., 2.}, {0., 1., 0.}, {1., 1., 1.}};
-//        double[][] A = {{3., 0., 1.}, {0., 1., 1.}, {6., 1., 4.}};
+//        double[][] A = {{1., 0., 2.}, {0., 1., 0.}, {1., 1., 1.}};
+        double[][] A = {{3., 0., 1.}, {0., 1., 1.}, {13., 1., 4.}};
         System.out.println("Gauss elimination algorithm");
         GaussElimination(A, eps);
         System.out.println("---------------------------");

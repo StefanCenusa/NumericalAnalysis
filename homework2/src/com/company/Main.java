@@ -55,7 +55,7 @@ public class Main {
         int n = a.length;
         double[] b = new double[n];
         for (int i = 0; i < n; i++) {
-            b[i] = a[i][0];
+            b[i] = a[i][i];
         }
         return b;
     }
@@ -91,7 +91,20 @@ public class Main {
         return Math.sqrt(norm);
     }
 
-    public static double[][] Householder(double[][] A, double[] s, double eps) {
+    public static double[] reverseSubstitution(double[][] A, double[] b){
+        int n = b.length;
+        double[] x = new double[n];
+        for (int i=n-1; i>=0; i--){
+            double sum = 0.;
+            for (int j= i+1; j<n; j++){
+                sum+= A[i][j] * x[j];
+            }
+            x[i] = (b[i] - sum)/A[i][i];
+        }
+        return x;
+    }
+
+    public static double[] Householder(double[][] A, double[] s, double eps) {
         int n = A.length;
         double[][] Acopy = new double[n][n];
         for (int i = 0; i < A.length; i++)
@@ -100,7 +113,7 @@ public class Main {
         double[] b = arrayMatrixProduct(Acopy, s);
         double[] u = new double[n];
 
-        for (int r = 0; r < n; r++) {
+        for (int r = 0; r < n-1; r++) {
             double sigma, beta, k, gamma;
             sigma = 0.0;
 
@@ -164,7 +177,7 @@ public class Main {
             }
         }
 
-        return QR;
+        return reverseSubstitution(Acopy, b);
     }
 
     public static void main(String[] args) {
@@ -180,10 +193,11 @@ public class Main {
         System.out.println("1. Array matrix product: ");
         double[] b = arrayMatrixProduct(A, s);
         printArray(b);
+        printArray(s);
         System.out.println("---------------------------");
 
         System.out.println("2. QR Decomposition of Matrix A");
-        printMatrix(Householder(A, s, eps));
+        printArray(Householder(A, s, eps));
         System.out.println("---------------------------");
 
         System.out.println("3. QR Decomposition of Matrix A time measurement");
@@ -198,8 +212,7 @@ public class Main {
         System.out.println("Generating matrix and array of n: " + n + " took: " + elapsedTime + "ms");
 
         startTime = System.currentTimeMillis();
-        double[][] XHouseholder = Householder(An250, sn250, eps);
-        double[] XHouseholderArray = getColumn(XHouseholder);
+        double[] XHouseholder = Householder(An250, sn250, eps);
         stopTime = System.currentTimeMillis();
         elapsedTime = stopTime - startTime;
         System.out.println("a. Using Householder algorithm: " + elapsedTime + "ms");
@@ -215,9 +228,9 @@ public class Main {
 
 
         System.out.println("4. Errors of QR Decomposition of Matrix A: ");
-        System.out.println("||Ainit * Xhouseholder - binit||2   ->  " + euclideanNorm(arraySubtract(arrayMatrixProduct(An250, XHouseholderArray), bn250)));
+        System.out.println("||Ainit * Xhouseholder - binit||2   ->  " + euclideanNorm(arraySubtract(arrayMatrixProduct(An250, XHouseholder), bn250)));
         System.out.println("||Ainit * XQR - binit||2    ->  " + euclideanNorm(arraySubtract(arrayMatrixProduct(An250, x.getColumnPackedCopy()), bn250)));
-        System.out.println("||Xhouseholder - s||2 / ||s||2  ->  " + euclideanNorm(arraySubtract(XHouseholderArray, sn250)) / euclideanNorm(sn250));
+        System.out.println("||Xhouseholder - s||2 / ||s||2  ->  " + euclideanNorm(arraySubtract(XHouseholder, sn250)) / euclideanNorm(sn250));
         System.out.println("||XQR - s||2 / ||s||2   ->  " + euclideanNorm(arraySubtract(x.getColumnPackedCopy(), sn250)) / euclideanNorm(sn250));
         System.out.println("---------------------------");
     }
