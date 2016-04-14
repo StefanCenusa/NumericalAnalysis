@@ -188,20 +188,67 @@ public class Main {
         return AplusB;
     }
 
-    private static void matrixProduct(int n, List<Pair> A[], List<Pair> B[]) {
-        List<Pair> AoriB[] = new List[n];
+    private static List<Pair>[] transpusa(int n, double[] M) {
+        List<Pair>[] aux = new List[n];
 
         for (int i = 0; i < n; i++) {
-            
+            Pair elem = Pair.createPair(M[i], 0);
+            if (aux[i] == null) {
+                aux[i] = new ArrayList<Pair>();
+            }
+            aux[i].add(aux[i].size(), elem);
         }
+
+        return aux;
     }
 
+    private static double[] matrixProduct2(int n, List<Pair> A[], double[] xb) {
+        double AoriB[] = new double[n];
+        for (int i = 0; i < n; i++) {
+            ListIterator<Pair> it = A[i].listIterator();
+            double sum = 0.;
+            while (it.hasNext()) {
+                Pair aij = it.next();
+                int k = aij.getCol();
+                sum += aij.getVal() * xb[k];
+            }
+            AoriB[i] = sum;
+        }
+        return AoriB;
+    }
+
+    private static List<Pair>[] matrixProduct2(int n, List<Pair> A[], List<Pair> B[]) {
+        List<Pair> AoriB[] = new List[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                ListIterator<Pair> it = A[i].listIterator();
+                double sum = 0.;
+                while (it.hasNext()) {
+                    Pair aij = it.next();
+                    int k = aij.getCol();
+                    ListIterator<Pair> itb = B[k].listIterator();
+                    while (itb.hasNext()) {
+                        Pair xb = itb.next();
+                        if (xb.getCol().equals(j)) {
+                            sum += aij.getVal() * xb.getVal();
+                        }
+                    }
+                }
+                if (sum != 0) {
+                    Pair pair = Pair.createPair(sum, j);
+                    if (AoriB[i] == null) {
+                        AoriB[i] = new ArrayList<Pair>();
+                    }
+                    AoriB[i].add(AoriB[i].size(), pair);
+                }
+            }
+        }
+        return AoriB;
+    }
 
     private static void arrayMatrixProduct(int n, List<Pair> A[], double x[]) {
 
     }
-
-    ;
 
     public static void main(String[] args) {
         System.out.println("Homework 4");
@@ -272,8 +319,14 @@ public class Main {
 
         //---------------------------------------------------
 
-        matrixSum(n, A, B);
+        double[] x = new double[n];
+        for (int i = 0; i < n; i++) {
+            x[i] = i + 1;
+        }
+
+        //----------------------------------------------------
         System.out.println(compareLists(matrixSum(n, A, B), AplusB, eps));
-        matrixProduct(n, A, B);
+        System.out.println(compareLists(matrixProduct2(n, A, B), AoriB, eps));
+        System.out.println(compareLists(matrixProduct2(n, A, transpusa(n, x)), transpusa(n, Ax), eps));
     }
 }
