@@ -69,47 +69,96 @@ public class Main {
                 it2 = B[i].listIterator();
             }
             Pair<Double, Integer> a = Pair.createPair(0., 0), b = Pair.createPair(0., 0);
+            boolean aChanged = false, bChanged = false;
             if (it != null && it.hasNext()) {
                 a = it.next();
+                aChanged = true;
             }
             if (it2 != null && it2.hasNext()) {
                 b = it2.next();
+                bChanged = true;
             }
-            boolean change;
+
             do {
-                change = false;
                 Pair<Double, Integer> pair = null;
-                if (a.getCol() < b.getCol()) {
+                if (aChanged && a.getCol() < b.getCol()) {
                     pair = Pair.createPair(a.getVal(), a.getCol());
                     if (it != null && it.hasNext()) {
                         a = it.next();
-                        change = true;
+                        aChanged = true;
+                    } else {
+                        aChanged = false;
                     }
-                } else if (a.getCol() > b.getCol()) {
+                    if (pair != null) {
+                        if (AplusB[i] == null) {
+                            AplusB[i] = new ArrayList<Pair>();
+                        }
+                        AplusB[i].add(AplusB[i].size(), pair);
+                    }
+                } else if (bChanged && a.getCol() > b.getCol()) {
                     pair = Pair.createPair(b.getVal(), b.getCol());
                     if (it2 != null && it2.hasNext()) {
                         b = it2.next();
-                        change = true;
+                        bChanged = true;
+                    } else {
+                        bChanged = false;
                     }
-                } else {
+                    if (pair != null) {
+                        if (AplusB[i] == null) {
+                            AplusB[i] = new ArrayList<Pair>();
+                        }
+                        AplusB[i].add(AplusB[i].size(), pair);
+                    }
+                } else if (aChanged && bChanged) {
                     pair = Pair.createPair(a.getVal() + b.getVal(), a.getCol());
                     if (it != null && it.hasNext()) {
                         a = it.next();
-                        change = true;
+                        aChanged = true;
+                    } else {
+                        aChanged = false;
                     }
                     if (it2 != null && it2.hasNext()) {
                         b = it2.next();
-                        change = true;
+                        bChanged = true;
+                    } else {
+                        bChanged = false;
                     }
-                }
-                if (pair != null) {
-                    if (AplusB[i] == null) {
-                        AplusB[i] = new ArrayList<Pair>();
+                    if (pair != null) {
+                        if (AplusB[i] == null) {
+                            AplusB[i] = new ArrayList<Pair>();
+                        }
+                        AplusB[i].add(AplusB[i].size(), pair);
                     }
-                    AplusB[i].add(AplusB[i].size(), pair);
+                } else {
+                    while (aChanged) {
+                        pair = Pair.createPair(a.getVal(), a.getCol());
+                        if (AplusB[i] == null) {
+                            AplusB[i] = new ArrayList<Pair>();
+                        }
+                        AplusB[i].add(AplusB[i].size(), pair);
+                        if (it != null && it.hasNext()) {
+                            a = it.next();
+                            aChanged = true;
+                        } else {
+                            aChanged = false;
+                        }
+                    }
+                    while (bChanged) {
+                        pair = Pair.createPair(b.getVal(), b.getCol());
+                        if (it != null && it.hasNext()) {
+                            a = it.next();
+                            bChanged = true;
+                        } else {
+                            bChanged = false;
+                        }
+                        if (AplusB[i] == null) {
+                            AplusB[i] = new ArrayList<Pair>();
+                        }
+                        AplusB[i].add(AplusB[i].size(), pair);
+                    }
                 }
             }
-            while (change);
+            while (aChanged || bChanged);
         }
 
         return AplusB;
