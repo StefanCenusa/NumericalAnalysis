@@ -27,6 +27,32 @@ class Pair<K, V> {
 
 public class Main {
 
+    private static boolean compareLists(List<Pair> A[], List<Pair> B[], double eps) {
+
+        if (A.length != B.length) {
+            return false;
+        }
+        int n = A.length;
+        for (int i = 0; i < n; i++) {
+            if (A[i].size() != B[i].size()) {
+                return false;
+            }
+            if (A[i].size() == 0) {
+                continue;
+            }
+            ListIterator<Pair> it = A[i].listIterator();
+            ListIterator<Pair> it2 = B[i].listIterator();
+            while (it.hasNext()) {
+                Pair pair1 = it.next();
+                Pair pair2 = it2.next();
+                if (Math.abs(pair1.getVal() - pair2.getVal()) > eps || Math.abs(pair1.getCol() - pair2.getCol()) > eps) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private static void readInputFromFile(Scanner s, int n, List<Pair> A[], double Ax[]) {
 
         Scanner numScanner = new Scanner(s.nextLine()).useLocale(Locale.US);
@@ -180,7 +206,7 @@ public class Main {
         System.out.println("Homework 4");
         System.out.println("---------------------------");
         Scanner s = null;
-
+        double eps = 0.0001;
         try {
             s = new Scanner(new File("resources/a.txt"));
         } catch (IOException ex) {
@@ -246,6 +272,7 @@ public class Main {
         //---------------------------------------------------
 
         matrixSum(n, A, B);
+        System.out.println(compareLists(matrixSum(n, A, B), AplusB, eps));
         matrixProduct(n, A, B);
     }
 }
