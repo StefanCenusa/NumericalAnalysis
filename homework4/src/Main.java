@@ -66,7 +66,7 @@ public class Main {
 
         numScanner = new Scanner(s.nextLine()).useLocale(Locale.US).useDelimiter(", ");
 
-        for (int i = 0; i < n; i++) {
+        while (s.hasNextLine()) {
             Double x = numScanner.nextDouble();
             Integer lin = numScanner.nextInt();
             Integer col = numScanner.nextInt();
@@ -75,9 +75,7 @@ public class Main {
                 A[lin] = new ArrayList<Pair>();
             }
             A[lin].add(A[lin].size(), pair);
-            if (i < n - 1) {
-                numScanner = new Scanner(s.nextLine()).useLocale(Locale.US).useDelimiter(", ");
-            }
+            numScanner = new Scanner(s.nextLine()).useLocale(Locale.US).useDelimiter(", ");
         }
     }
 
@@ -171,8 +169,8 @@ public class Main {
                     }
                     while (bChanged) {
                         pair = Pair.createPair(b.getVal(), b.getCol());
-                        if (it != null && it.hasNext()) {
-                            a = it.next();
+                        if (it2 != null && it2.hasNext()) {
+                            b = it2.next();
                             bChanged = true;
                         } else {
                             bChanged = false;
@@ -191,10 +189,13 @@ public class Main {
     }
 
     private static void matrixProduct(int n, List<Pair> A[], List<Pair> B[]) {
+        List<Pair> AoriB[] = new List[n];
 
+        for (int i = 0; i < n; i++) {
+            
+        }
     }
 
-    ;
 
     private static void arrayMatrixProduct(int n, List<Pair> A[], double x[]) {
 
