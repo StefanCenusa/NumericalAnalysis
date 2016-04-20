@@ -110,11 +110,10 @@ public class Main {
         do {
             deltaX = 0.;
             for (int i = 0; i < n; i++) {
-                ListIterator<Pair> it = A[i].listIterator();
                 double sum = 0.;
-                ListIterator<Pair> it2 = A[i].listIterator();
-                while (it2.hasNext()) {
-                    Pair aij = it2.next();
+                ListIterator<Pair> it = A[i].listIterator();
+                while (it.hasNext()) {
+                    Pair aij = it.next();
                     int j = aij.getCol();
                     if (j != i) {
                         Aij = aij.getVal();
@@ -160,10 +159,10 @@ public class Main {
         System.out.println("Homework 5");
         System.out.println("---------------------------");
         Scanner s = null;
-        int p = 8;
+        int p = 5;
         double eps = Math.pow(10, -p);
         try {
-            s = new Scanner(new File("resources/m_rar_2016_1.txt"));
+            s = new Scanner(new File("resources/m_rar_2016_3.txt"));
         } catch (IOException ex) {
             System.err.println("An IOException was caught!");
             ex.printStackTrace();
@@ -176,11 +175,15 @@ public class Main {
         List<Pair> A[] = new List[n];
         double Ax[] = new double[n];
         readInputFromFile(s, n, A, Ax);
-        System.out.println("Diagonals: " + checkDiagonals(n, A));
-
-        double[] AxSor = xSOR(n, A, Ax, eps);
-        double[] normComp = arraySubtract(matrixProduct2(n, A, AxSor), Ax);
-        System.out.println("||AxSOR - b|| = " + euclideanNorm(normComp));
+        boolean check = checkDiagonals(n, A);
+        System.out.println("Diagonals: " + check);
+        if (check) {
+            double[] AxSor = xSOR(n, A, Ax, eps);
+            if (AxSor.length == n) {
+                double[] normComp = arraySubtract(matrixProduct2(n, A, AxSor), Ax);
+                System.out.println("||AxSOR - b|| = " + euclideanNorm(normComp));
+            }
+        }
         System.out.println("---------------------------");
         System.out.println("end");
     }
