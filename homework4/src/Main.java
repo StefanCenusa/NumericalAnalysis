@@ -246,10 +246,6 @@ public class Main {
         return AoriB;
     }
 
-    private static void arrayMatrixProduct(int n, List<Pair> A[], double x[]) {
-
-    }
-
     public static void main(String[] args) {
         System.out.println("Homework 4");
         System.out.println("---------------------------");
