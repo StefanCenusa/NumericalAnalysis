@@ -103,15 +103,15 @@ public class Main {
         for (int i = 0; i < n; i++) {
             xp[i] = xc[i] = 0;
         }
-        int k = 0, kmax = 10000;
+        int k = 0, kmax = 100;
         double deltaX = 0.;
-        double deltaMax = Math.pow(10, 8);
+//        double deltaMax = Math.pow(10, 8);
         double Aii = 0., Aij = 0.;
 
         do {
-            for (int i = 0; i < n; i++) {
-                xp[i] = xc[i];
-            }
+//            for (int i = 0; i < n; i++) {
+//                xp[i] = xc[i];
+//            }
             for (int i = 0; i < n; i++) {
                 ListIterator<Pair> it = A[i].listIterator();
                 while (it.hasNext()) {
@@ -147,15 +147,16 @@ public class Main {
                         }
                     }
                     if (Aij != 0) {
-                        sum2 += Aij * xp[j];
+                        sum2 += Aij * xc[j];
                     }
                 }
-                xc[i] = -0.2 * xp[i] + 1.2 * (b[i] - sum1 - sum2) / Aii;
+                xc[i] = -0.2 * xc[i] + 1.2 * (b[i] - sum1 - sum2) / Aii;
             }
             k++;
-            deltaX = euclideanNorm(arraySubtract(xc, xp));
+            //deltaX = euclideanNorm(arraySubtract(xc, xp));
         }
-        while (deltaX >= eps && k < kmax && deltaX <= deltaMax);
+        //while (deltaX >= eps && k < kmax && deltaX <= deltaMax);
+        while (k < kmax);
         if (deltaX < eps) {
             System.out.println("Xc este aproximarea solutiei gasita in " + k + " iteratii");
             return xc;
@@ -164,6 +165,21 @@ public class Main {
             System.out.println("Divergenta");
             return div;
         }
+    }
+
+    private static double[] matrixProduct2(int n, List<Pair> A[], double[] xb) {
+        double AoriB[] = new double[n];
+        for (int i = 0; i < n; i++) {
+            ListIterator<Pair> it = A[i].listIterator();
+            double sum = 0.;
+            while (it.hasNext()) {
+                Pair aij = it.next();
+                int k = aij.getCol();
+                sum += aij.getVal() * xb[k];
+            }
+            AoriB[i] = sum;
+        }
+        return AoriB;
     }
 
     public static void main(String[] args) {
@@ -191,7 +207,8 @@ public class Main {
         System.out.println("Diagonals: " + checkDiagonals(n, A));
 
         double[] AxSor = xSOR(n, A, Ax, eps);
-        System.out.println("||AxSOR - b|| = " + euclideanNorm(arraySubtract(AxSor, Ax)));
+        double[] normComp = arraySubtract(matrixProduct2(n, A, AxSor), Ax);
+        System.out.println("||AxSOR - b|| = " + euclideanNorm(normComp));
 
         System.out.println("end");
     }
