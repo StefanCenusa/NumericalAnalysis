@@ -99,64 +99,38 @@ public class Main {
 
     public static double[] xSOR(int n, List<Pair> A[], double[] b, double eps) {
         double xc[] = new double[n];
-        double xp[] = new double[n];
         for (int i = 0; i < n; i++) {
-            xp[i] = xc[i] = 0;
+            xc[i] = 0;
         }
-        int k = 0, kmax = 100;
-        double deltaX = 0.;
-//        double deltaMax = Math.pow(10, 8);
-        double Aii = 0., Aij = 0.;
+        int k = 0, kmax = 10000;
+        double deltaX;
+        double deltaMax = Math.pow(10, 8);
+        double Aii = 0., Aij;
 
         do {
-//            for (int i = 0; i < n; i++) {
-//                xp[i] = xc[i];
-//            }
+            deltaX = 0.;
             for (int i = 0; i < n; i++) {
                 ListIterator<Pair> it = A[i].listIterator();
-                while (it.hasNext()) {
-                    Pair aij = it.next();
-                    if (aij.getCol() == i) {
+                double sum = 0.;
+                ListIterator<Pair> it2 = A[i].listIterator();
+                while (it2.hasNext()) {
+                    Pair aij = it2.next();
+                    int j = aij.getCol();
+                    if (j != i) {
+                        Aij = aij.getVal();
+                        sum += Aij * xc[j];
+                    } else {
                         Aii = aij.getVal();
-                        break;
                     }
                 }
-                double sum1 = 0., sum2 = 0.;
-                for (int j = 0; j < i - 1; j++) {
-                    Aij = 0.;
-                    ListIterator<Pair> it2 = A[i].listIterator();
-                    while (it2.hasNext()) {
-                        Pair aij = it2.next();
-                        if (aij.getCol() == j) {
-                            Aij = aij.getVal();
-                            break;
-                        }
-                    }
-                    if (Aij != 0) {
-                        sum1 += Aij * xc[j];
-                    }
-                }
-                for (int j = i + 1; j < n; j++) {
-                    Aij = 0.;
-                    ListIterator<Pair> it2 = A[i].listIterator();
-                    while (it2.hasNext()) {
-                        Pair aij = it2.next();
-                        if (aij.getCol() == j) {
-                            Aij = aij.getVal();
-                            break;
-                        }
-                    }
-                    if (Aij != 0) {
-                        sum2 += Aij * xc[j];
-                    }
-                }
-                xc[i] = -0.2 * xc[i] + 1.2 * (b[i] - sum1 - sum2) / Aii;
+                double aux = xc[i];
+                xc[i] = -0.2 * xc[i] + 1.2 * (b[i] - sum) / Aii;
+                deltaX += (xc[i] - aux) * (xc[i] - aux);
             }
             k++;
-            //deltaX = euclideanNorm(arraySubtract(xc, xp));
+            deltaX = Math.sqrt(deltaX);
         }
-        //while (deltaX >= eps && k < kmax && deltaX <= deltaMax);
-        while (k < kmax);
+        while (deltaX >= eps && k < kmax && deltaX <= deltaMax);
         if (deltaX < eps) {
             System.out.println("Xc este aproximarea solutiei gasita in " + k + " iteratii");
             return xc;
@@ -186,7 +160,7 @@ public class Main {
         System.out.println("Homework 5");
         System.out.println("---------------------------");
         Scanner s = null;
-        int p = 5;
+        int p = 8;
         double eps = Math.pow(10, -p);
         try {
             s = new Scanner(new File("resources/m_rar_2016_1.txt"));
@@ -202,14 +176,12 @@ public class Main {
         List<Pair> A[] = new List[n];
         double Ax[] = new double[n];
         readInputFromFile(s, n, A, Ax);
-        System.out.println("1. ");
-        System.out.println("---------------------------");
         System.out.println("Diagonals: " + checkDiagonals(n, A));
 
         double[] AxSor = xSOR(n, A, Ax, eps);
         double[] normComp = arraySubtract(matrixProduct2(n, A, AxSor), Ax);
         System.out.println("||AxSOR - b|| = " + euclideanNorm(normComp));
-
+        System.out.println("---------------------------");
         System.out.println("end");
     }
 }
