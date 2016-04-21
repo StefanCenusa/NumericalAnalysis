@@ -62,13 +62,13 @@ public class Main {
         A[lin].add(A[lin].size(), pair);
     }
 
-    public static boolean checkDiagonals(int n, List<Pair> A[]) {
+    public static boolean checkDiagonals(int n, List<Pair> A[], double eps) {
         for (int i = 0; i < n; i++) {
             boolean notNull = false;
             ListIterator<Pair> it = A[i].listIterator();
             while (it.hasNext()) {
                 Pair aij = it.next();
-                if (aij.getCol() == i && aij.getVal() != 0) {
+                if (aij.getCol() == i && Math.abs(aij.getVal()) > eps) {
                     notNull = true;
                     break;
                 }
@@ -159,7 +159,7 @@ public class Main {
         System.out.println("Homework 5");
         System.out.println("---------------------------");
         Scanner s = null;
-        int p = 5;
+        int p = 8;
         double eps = Math.pow(10, -p);
         try {
             s = new Scanner(new File("resources/m_rar_2016_3.txt"));
@@ -175,7 +175,7 @@ public class Main {
         List<Pair> A[] = new List[n];
         double Ax[] = new double[n];
         readInputFromFile(s, n, A, Ax);
-        boolean check = checkDiagonals(n, A);
+        boolean check = checkDiagonals(n, A, eps);
         System.out.println("Diagonals: " + check);
         if (check) {
             double[] AxSor = xSOR(n, A, Ax, eps);
