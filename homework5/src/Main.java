@@ -162,7 +162,7 @@ public class Main {
         int p = 8;
         double eps = Math.pow(10, -p);
         try {
-            s = new Scanner(new File("resources/m_rar_2016_3.txt"));
+            s = new Scanner(new File("resources/m_rar_2016_4.txt"));
         } catch (IOException ex) {
             System.err.println("An IOException was caught!");
             ex.printStackTrace();
