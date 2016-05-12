@@ -13,7 +13,7 @@ public class Main {
         return Px;
     }
 
-    private static double[] Muller(double A[], double x[], int k, double eps) {
+    private static double Muller(double A[], double x[], int k, double eps) {
         double deltaX = 0., h0, h1, sigma0, sigma1, a, b, c;
         double deltaXMax = Math.pow(10, 8);
         double kMax = 1000;
@@ -44,31 +44,71 @@ public class Main {
             x[1] = x[2];
             x[2] = x[3];
         }
-        while (Math.abs(deltaX) < eps && count < kMax && Math.abs(deltaX) < deltaXMax);
+        while (Math.abs(deltaX) >= eps && count <= kMax && Math.abs(deltaX) <= deltaXMax);
         if (Math.abs(deltaX) < eps) {
-            return x;
+            return x[k];
         } else {
             System.out.println("Divergenta; Incercati alti x0, x1, x2");
-            return new double[0];
+            return -1;
         }
     }
 
-    private static double metodaSecantei(double x0, double x1, double eps) {
-        double x = x0;
-        double deltaX = 0., h0, h1, sigma0, sigma1, a, b, c;
+    private static double g(double[] A, double x) {
+        double h = Math.pow(10, -5);
+        return (3 * computePolinom(A, x) - 4 * computePolinom(A, x - h) + computePolinom(A, x - 2 * h)) / (2 * h);
+    }
+
+    private static double g2(double[] A, double x) {
+        double h = Math.pow(10, -5);
+        return (-computePolinom(A, x + 2 * h) + 8 * computePolinom(A, x + h) - 8 * computePolinom(A, x - h) + computePolinom(A, x - 2 * h)) / (12 * h);
+    }
+
+    private static double metodaSecantei(double[] A, double[] x, int k, double eps) {
+        double deltaX = 0.;
         double deltaXMax = Math.pow(10, 8);
         double kMax = 1000;
-        int k = 0;
+        int count = 0;
         do {
-
-            //calculeaza deltaX
-            //deltaX = 10^-15
-            x = x - deltaX;
-            k++;
+            double num = g(A, x[k - 1]) - g(A, x[k - 2]);
+            if (Math.abs(num) < eps) {
+                deltaX = Math.pow(10, -5);
+            } else {
+                deltaX = ((x[k - 1] - x[k - 2]) * g(A, x[k - 1])) / num;
+            }
+            x[k] = x[k - 1] - deltaX;
+            x[k - 2] = x[k - 1];
+            x[k - 1] = x[k];
+            count++;
         }
-        while (Math.abs(deltaX) < eps && k < kMax && Math.abs(deltaX) < deltaXMax);
+        while (Math.abs(deltaX) >= eps && count <= kMax && Math.abs(deltaX) <= deltaXMax);
         if (Math.abs(deltaX) < eps) {
-            return x;
+            return x[k];
+        } else {
+            System.out.println("Divergenta; Incercati alti x0, x1");
+            return -1;
+        }
+    }
+
+    private static double metodaSecantei2(double[] A, double[] x, int k, double eps) {
+        double deltaX = 0.;
+        double deltaXMax = Math.pow(10, 8);
+        double kMax = 1000;
+        int count = 0;
+        do {
+            double num = g2(A, x[k - 1]) - g2(A, x[k - 2]);
+            if (Math.abs(num) < eps) {
+                deltaX = Math.pow(10, -5);
+            } else {
+                deltaX = ((x[k - 1] - x[k - 2]) * g2(A, x[k - 1])) / num;
+            }
+            x[k] = x[k - 1] - deltaX;
+            x[k - 2] = x[k - 1];
+            x[k - 1] = x[k];
+            count++;
+        }
+        while (Math.abs(deltaX) >= eps && count <= kMax && Math.abs(deltaX) <= deltaXMax);
+        if (Math.abs(deltaX) < eps) {
+            return x[k];
         } else {
             System.out.println("Divergenta; Incercati alti x0, x1");
             return -1;
@@ -88,14 +128,18 @@ public class Main {
         A[1] = -4;
         A[2] = 3;
         double x[] = new double[n + 1];
-        x[0] = 0.;
-        x[1] = 1.;
+        x[0] = 1.;
+        x[1] = 1.5;
         x[2] = 2.;
-        Muller(A, x, n - 1, eps);
+        System.out.println(Muller(A, x, n - 1, eps));
         System.out.println("---------------------------");
         System.out.println("2. ");
         System.out.println("---------------------------");
-        metodaSecantei(1, 2, eps);
+        double x2[] = new double[n + 1];
+        x2[0] = 1.;
+        x2[1] = 1.5;
+        System.out.println(metodaSecantei(A, x2, 2, eps));
+        System.out.println(metodaSecantei2(A, x2, 2, eps));
         System.out.println("---------------------------");
         System.out.println("end");
     }
